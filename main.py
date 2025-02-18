@@ -35,12 +35,13 @@ async def sync():
         # Inserts all the records into monogodb without checking if present
         #collect = mycollection.insert_many(cves)
 
+        # checks if the CVE in the db if not add
         count = 0;
         for x in cves:
             cve_id = x['cve']['id']
             print(cve_id)
             cve_id = str(cve_id)
-            if (mycollection.find({"cve.id":cve_id})):
+            if (mycollection.find_one({"cve.id":cve_id})):
                 continue
             else:
                 mycollection.insert_one(x)
