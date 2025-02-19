@@ -5,6 +5,7 @@ import pymongo
 import requests
 import httpx
 import datetime
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 myclient = pymongo.MongoClient("mongodb://localhost:27017")
@@ -51,6 +52,16 @@ async def sync():
         return {f"Synced {count} CVEs"}
 
 
+#return first entries
+@app.get("/find")
+def find():
+    search_cve = list(mycollection.find({}))
+    if (search_cve):
+        for x in search_cve:
+            x["_id"] = str(x["_id"])
+        return search_cve
+    return JSONResponse(content={"message": "No records to search"}, status_code=404)
+
 # Search with cve-id in path paramenter
 @app.get("/cve/id/{id}")
 def get_by_id(id:str):
@@ -60,7 +71,7 @@ def get_by_id(id:str):
         search_cve['_id'] = str(search_cve['_id'])
         return search_cve
     else:
-        return {f"No CVE found with {id}"}
+       return JSONResponse(content={"message": f"No records to search with {id} "}, status_code=404)
 
 # Search with cve-id with query parameter
 @app.get("/cve/search/")
@@ -71,7 +82,8 @@ def get_by_id_q(id:str):
         search_cve['_id'] = str(search_cve['_id'])
         return search_cve
     else:
-        return {f"No CVE found with {id}"}
+        return JSONResponse(content={"message": f"No CVE with {id}"}, status_code=404)
+
 
 # Get by Year
 @app.get("/cve/year/{year}")
@@ -91,7 +103,7 @@ def get_by_year(year:str):
             x['_id'] = str(x['_id'])
         return search_cve
     else:
-        return "No Results Found"
+        return JSONResponse(content={"message": "No records to search"}, status_code=404)
 
 # get by range of year
 @app.get("/cve/year/")
@@ -118,6 +130,8 @@ def get_by_year_(year1:str,year2:str):
             for x in search_cve:
                 x['_id'] = str(x['_id'])
             return search_cve
+    return JSONResponse(content={"message": "No records to search"}, status_code=404)
+
 
 
 # get by baseScore
@@ -130,7 +144,9 @@ def get_by_score(score:int):
         for x in search_cve:
             x['_id'] = str(x['_id'])
         return search_cve
-    return f"No records Found with BaseScore {score}"
+
+    return JSONResponse(content={"message": "No records to search"}, status_code=404)
+
 
 
 # get by Last N days
@@ -145,7 +161,9 @@ def search_by_N(N:int):
         for x in search_cve:
             x['_id'] = str(x['_id'])
         return search_cve
-    return {"No results Found"}
+
+    return JSONResponse(content={"message": "No records to search"}, status_code=404)
+
 
 
 
