@@ -59,7 +59,7 @@ def find():
     if (search_cve):
         for x in search_cve:
             x["_id"] = str(x["_id"])
-        return search_cve
+        return JSONResponse(content=search_cve,status_code=200)
     return JSONResponse(content={"message": "No records to search"}, status_code=404)
 
 # Search with cve-id in path paramenter
@@ -69,7 +69,7 @@ def get_by_id(id:str):
     search_cve = mycollection.find_one({"cve.id":id})
     if (search_cve):
         search_cve['_id'] = str(search_cve['_id'])
-        return search_cve
+        return JSONResponse(content=search_cve,status_code=200)
     else:
        return JSONResponse(content={"message": f"No records to search with {id} "}, status_code=404)
 
@@ -80,7 +80,7 @@ def get_by_id_q(id:str):
     search_cve = mycollection.find_one({"cve.id":id})
     if (search_cve):
         search_cve['_id'] = str(search_cve['_id'])
-        return search_cve
+        return JSONResponse(content=search_cve,status_code=200)
     else:
         return JSONResponse(content={"message": f"No CVE with {id}"}, status_code=404)
 
@@ -101,7 +101,7 @@ def get_by_year(year:str):
     if (search_cve):
         for x in search_cve:
             x['_id'] = str(x['_id'])
-        return search_cve
+        return JSONResponse(content=search_cve,status_code=200)
     else:
         return JSONResponse(content={"message": "No records to search"}, status_code=404)
 
@@ -122,14 +122,14 @@ def get_by_year_(year1:str,year2:str):
         if (search_cve):
             for x in search_cve:
                 x['_id'] = str(x['_id'])
-            return search_cve
+            return JSONResponse(content=search_cve,status_code=200)
     else:
         query = {"cve.published":{"$gt":year_iso1,"$lt":year_iso2}}
         search_cve = list(mycollection.find(query))
         if (search_cve):
             for x in search_cve:
                 x['_id'] = str(x['_id'])
-            return search_cve
+            return JSONResponse(content=search_cve,status_code=200)
     return JSONResponse(content={"message": "No records to search"}, status_code=404)
 
 
@@ -143,7 +143,7 @@ def get_by_score(score:int):
     if (search_cve):
         for x in search_cve:
             x['_id'] = str(x['_id'])
-        return search_cve
+        return JSONResponse(content=search_cve,status_code=200)
 
     return JSONResponse(content={"message": "No records to search"}, status_code=404)
 
@@ -160,7 +160,7 @@ def search_by_N(N:int):
     if (search_cve):
         for x in search_cve:
             x['_id'] = str(x['_id'])
-        return search_cve
+        return JSONResponse(content=search_cve,status_code=200)
 
     return JSONResponse(content={"message": "No records to search"}, status_code=404)
 
