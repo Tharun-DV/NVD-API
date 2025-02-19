@@ -57,10 +57,10 @@ def get_by_id(id:str):
     print(id)
     search_cve = mycollection.find_one({"cve.id":id})
     if (search_cve):
-        search_cve['_id'] = str(search_cve['_id'])
+        for cve in search_cve:
+            cve["_id"] = str(cve["_id"])
         return search_cve
-    else:
-        return {f"No CVE found with {id}"}
+    return {f"No CVE found with {id}"}
 
 # Search with cve-id with query parameter
 @app.get("/cve/search/")
@@ -68,8 +68,9 @@ def get_by_id_q(id:str):
     #print(type(id))
     search_cve = mycollection.find_one({"cve.id":id})
     if (search_cve):
-        search_cve['_id'] = str(search_cve['_id'])
-        return search_cve
+        for cve in search_cve:
+            cve["_id"] = str(cve["_id"])
+        return str(search_cve)
     else:
         return {f"No CVE found with {id}"}
 
@@ -86,12 +87,10 @@ def get_by_year(year:str):
 
     query = {"cve.published":{"$gt":year_iso,"$lt":year_iso_next}}
     search_cve = list(mycollection.find(query))
-    if (search_cve):
-        for x in search_cve:
-            x['_id'] = str(x['_id'])
-        return search_cve
-    else:
-        return "No Results Found"
+    for cve in search_cve:
+        cve["_id"] = str(cve["_id"])
+
+    return search_cve
 
 # get by range of year
 @app.get("/cve/year/")
@@ -107,17 +106,15 @@ def get_by_year_(year1:str,year2:str):
     if (year1 > year2):
         query = {"cve.published":{"$gt":year_iso2,"$lt":year_iso1}}
         search_cve = list(mycollection.find(query))
-        if (search_cve):
-            for x in search_cve:
-                x['_id'] = str(x['_id'])
-            return search_cve
+        for cve in search_cve:
+            cve["_id"] = str(cve["_id"])
+        return search_cve
     else:
         query = {"cve.published":{"$gt":year_iso1,"$lt":year_iso2}}
         search_cve = list(mycollection.find(query))
-        if (search_cve):
-            for x in search_cve:
-                x['_id'] = str(x['_id'])
-            return search_cve
+        for cve in search_cve:
+            cve["_id"] = str(cve["_id"])
+        return search_cve
 
 
 # get by baseScore
@@ -126,10 +123,13 @@ def get_by_score(score:int):
     query1 = {"cve.metrics.cvssMetricV2.cvssData.baseScore":score}
 
     search_cve = list(mycollection.find(query1))
+
+    for cve in search_cve:
+        cve["_id"] = str(cve["_id"])
+
     if (search_cve):
-        for x in search_cve:
-            x['_id'] = str(x['_id'])
         return search_cve
+
     return f"No records Found with BaseScore {score}"
 
 
@@ -141,9 +141,11 @@ def search_by_N(N:int):
     x = x.isoformat()
     query = {"cve.lastModified":{"$gt":x,"$lt":today}}
     search_cve = list(mycollection.find(query))
+
+    for cve in search_cve:
+        cve["_id"] = str(cve["_id"])
+
     if (search_cve):
-        for x in search_cve:
-            x['_id'] = str(x['_id'])
         return search_cve
     return {"No results Found"}
 
